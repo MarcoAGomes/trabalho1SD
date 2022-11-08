@@ -88,8 +88,6 @@ begin
     begin
 
         case (alu_sel) is
-        -- "0xx" for logic ops
-        -- "1xx" for arithmetic ops
         
         when "000" => -- and
             alu_res (3 downto 0) <= A and B;
