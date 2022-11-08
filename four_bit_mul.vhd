@@ -2,81 +2,45 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity four_bit_mul is
-
-    Port ( x : in STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
-            y : in STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
-            p : out STD_LOGIC_VECTOR (7 downto 0) := (others => '0');
-            cout_mul : out std_logic);
-            
+		PORT (X, Y: in STD_LOGIC_VECTOR(3 downto 0);
+		 P: out STD_LOGIC_VECTOR(7 downto 0)
+		 );
 end four_bit_mul;
 
-
 architecture Behavioral of four_bit_mul is
-    
-	 component four_bit_adder is
-    
-	 Port ( a : in STD_LOGIC_VECTOR (3 downto 0);
-            b : in STD_LOGIC_VECTOR (3 downto 0);
-            cin : in STD_LOGIC;
-            sum : out STD_LOGIC_VECTOR (3 downto 0);
-            cout, V, sgn, zr: out std_logic);
-    
-	 end component;
-    
-    signal L0, L1, L2: std_logic_vector (3 downto 0); -- "ands" do lado esquerdo dos somadores
-
-    signal R0, R1, R2: std_logic_vector (3 downto 0); -- entradas do lado direito dos somadores
-
-    signal p_temp: std_logic_vector (7 downto 0);
-
-
+		
+		COMPONENT half_adder IS
+			PORT (xHA, yHA: in STD_LOGIC;
+					sumHA, coutHA: out STD_LOGIC);
+		END COMPONENT;
+		
+		COMPONENT full_adder IS
+			PORT(xFA, yFA, cinFA: in STD_LOGIC;
+				  sumFA, coutFA: out	STD_LOGIC);
+		END COMPONENT;
+		
+		signal c2, c31, c32, c41, c42, c43, c51, c52, c53, c61, c62, c7: STD_LOGIC;
+		signal sp2, sp31, sp32, sp41, sp42, sp51, sp52: STD_LOGIC;		--Soma parcial 
 begin
-
-    L0 <= (y(1) and x(3), y(1) and x(2), y(1) and x(1), y(1) and x(0));
-    L1 <= (y(2) and x(3), y(2) and x(2), y(2) and x(1), y(2) and x(0));
-    L2 <= (y(3) and x(3), y(3) and x(2), y(3) and x(1), y(3) and x(0));
-    R0 <= ('0', y(0) and x(3), y(0) and x(2), y(0) and x(1)); -- parte direita do primeiro somador
-    p_temp(0) <= y(0) and x(0); -- primeiro digito da multiplicacao (LSB)
-
-    FBA0: four_bit_adder port map(
-        a => L0,
-        b => R0,
-        cin => '0',
-        cout => R1(3),
-        sum(3) => R1(2),
-        sum(2) => R1(1),
-        sum(1) => R1(0),
-        sum(0) => p_temp(1)
-    );
-    
-    FBA1: four_bit_adder port map(
-        a => L1,
-        b => R1,
-        cin => '0',
-        cout => R2(3),
-        sum(3) => R2(2),
-        sum(2) => R2(1),
-        sum(1) => R2(0),
-        sum(0) => p_temp(2)
-    );
-    
-    FBA2: four_bit_adder port map(
-        a => L2,
-        b => R2,
-        cin => '0',
-        cout => p_temp(7),
-        sum(3) => p_temp(6),
-        sum(2) => p_temp(5),
-        sum(1) => p_temp(4),
-        sum(0) => p_temp(3)
-    );
-
-    cout_mul <= p_temp(6);
-    p(5) <= p_temp(5);
-    p(4) <= p_temp(4);
-    p(3) <= p_temp(3);
-    p(2) <= p_temp(2);
-    p(1) <= p_temp(1);
-    p(0) <= p_temp(0);
-
+	P(0) <= X(0) AND Y(0);
+	
+	h1: half_adder PORT MAP ((X(1) AND Y(0)), (X(0) AND Y(1)), P(1), c2);
+	
+	f21: full_adder PORT MAP ((Y(0) AND X(2)), (Y(1) AND X(1)), c2, sp2, c31);
+	h2: half_adder PORT MAP (sp2,(Y(2) AND X(0)), p(2), c32);
+	
+	f31: full_adder PORT MAP (c31, c32, (Y(0) AND X(3)), sp31, c41);
+	f32: full_adder PORT MAP ((Y(1) AND X(2)), (Y(2) AND X(1)), sp31, sp32, c42);
+	h3:  half_adder PORT MAP ((Y(3) AND X(0)), sp32, P(3), c43);
+	
+	f41: full_adder PORT MAP (c41, c42, c43, sp41, c51);
+	f42: full_adder PORT MAP ((Y(1) AND X(3)), (Y(2) AND X(2)), sp41, sp42, c52);
+	h4:  half_adder PORT MAP ((Y(3) AND X(1)), sp42, P(4), c53);
+	
+	f51: full_adder PORT MAP (c51, c52, c53, sp51, c61);
+	f52: full_adder PORT MAP ((Y(2) AND X(3)),(Y(3) AND X(2)), sp51 , P(5), c62);
+	
+	f61: full_adder PORT MAP (c61, c62, (Y(3) AND X(3)), P(6), c7);
+	
+	P(7) <= c7;
 end Behavioral;
