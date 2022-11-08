@@ -26,8 +26,8 @@ architecture Behavioral of alu is
     component four_bit_mul is
         Port ( x : in STD_LOGIC_VECTOR (3 downto 0);
                 y : in STD_LOGIC_VECTOR (3 downto 0);
-                p : out STD_LOGIC_VECTOR (7 downto 0);
-                cout_mul : out std_logic);
+                p : out STD_LOGIC_VECTOR (7 downto 0));
+                --cout_mul : out std_logic);
         
         end component;
 
@@ -44,8 +44,8 @@ architecture Behavioral of alu is
 	 signal add_1_cout: std_logic;
 	 signal change_signal_cout: std_logic;
     signal sub_cout: std_logic;
-    signal mul_cout: std_logic;
-    signal sqr_cout: std_logic;
+    --signal mul_cout: std_logic;
+    --signal sqr_cout: std_logic;
     
 	 signal add_ovf: std_logic; 
 	 signal sub_ovf: std_logic;
@@ -79,9 +79,9 @@ begin
     
 	 sub: four_bit_adder port map(A, not_B, '1', sub_res, sub_cout, sub_ovf, sub_sgn,sub_zero);
     
-	 mul: four_bit_mul port map(A, B, mul_temp, mul_cout);
+	 mul: four_bit_mul port map(A, B, mul_temp);
     
-	 sqr: four_bit_mul port map(A, A, sqr_temp, sqr_cout);
+	 sqr: four_bit_mul port map(A, A, sqr_temp);
     
     process(A, B, alu_sel)
     
@@ -130,12 +130,12 @@ begin
 
         when "110" => -- multiplication
             alu_res <= mul_temp;
-            alu_res(6) <= mul_cout;
+            --alu_res(6) <= mul_cout;
 		
 
         when "111" => -- A * A
             alu_res <= sqr_temp;
-            alu_res(6) <= sqr_cout;
+            --alu_res(6) <= sqr_cout;
 
         when others =>
             alu_res <= "00000000";
