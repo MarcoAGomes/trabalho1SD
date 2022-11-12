@@ -3,9 +3,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity alu is
     
-    Port ( A : in STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
+    Port ( --A : in STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
             B : in STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
-            alu_sel : in STD_LOGIC_VECTOR (2 downto 0) := (others => '0');
+            --alu_sel : in STD_LOGIC_VECTOR (2 downto 0) := (others => '0');
             alu_res : out STD_LOGIC_VECTOR (7 downto 0) := (others =>'0'));
             --carry_out : out STD_LOGIC := '0');
 
@@ -30,7 +30,10 @@ architecture Behavioral of alu is
                 --cout_mul : out std_logic);
         
         end component;
-
+	
+    signal A : STD_LOGIC_VECTOR (3 downto 0) := "0100";
+    signal alu_sel : STD_LOGIC_VECTOR (2 downto 0) := "000";
+ 	
     -- signal alu_res : std_logic_vector (7 downto 0) := (others => '0');
     signal add_res: std_logic_vector (3 downto 0) := (others => '0');
     signal add_res_1: std_logic_vector (3 downto 0) := (others => '0');
