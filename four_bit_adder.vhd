@@ -47,10 +47,10 @@ begin
     
     FA3: full_adder port map (a(3), b(3), c(3), FA(3), c(4));
      
-    V <= c(3) xor c(4);
+    V <= c(4);
     cout <= c(4);
 	 sgn <= FA(3);
-	 zr <= not(FA(0) and FA(1) and FA(2) and FA(3));
+	 zr <= not(FA(0)) and not(FA(1)) and not(FA(2)) and not(FA(3));
 	 sum <= FA;
     
 end Behavioral;
