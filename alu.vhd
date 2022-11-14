@@ -3,11 +3,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity alu is
     
-    Port ( --A : in STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
+    Port ( A : in STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
             B : in STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
-            --alu_sel : in STD_LOGIC_VECTOR (2 downto 0) := (others => '0');
+            alu_sel : in STD_LOGIC_VECTOR (2 downto 0) := (others => '0');
             alu_res : out STD_LOGIC_VECTOR (7 downto 0) := (others =>'0'));
-            --carry_out : out STD_LOGIC := '0');
 
 end alu;
 
@@ -27,33 +26,32 @@ architecture Behavioral of alu is
         Port ( x : in STD_LOGIC_VECTOR (3 downto 0);
                 y : in STD_LOGIC_VECTOR (3 downto 0);
                 p : out STD_LOGIC_VECTOR (7 downto 0));
-                --cout_mul : out std_logic);
         
         end component;
 	
-    signal A : STD_LOGIC_VECTOR (3 downto 0) := "0100";
-    signal alu_sel : STD_LOGIC_VECTOR (2 downto 0) := "000";
+    --signal B: STD_LOGIC_VECTOR (3 downto 0) := "0100";
+	 --signal A : STD_LOGIC_VECTOR (3 downto 0) := "0100";
+    --signal alu_sel : STD_LOGIC_VECTOR (2 downto 0) := "000";
  	
-    -- signal alu_res : std_logic_vector (7 downto 0) := (others => '0');
     signal add_res: std_logic_vector (3 downto 0) := (others => '0');
     signal add_res_1: std_logic_vector (3 downto 0) := (others => '0');
 	 signal change_signal: std_logic_vector (3 downto 0) := (others => '0');
 	 signal sub_res: std_logic_vector (3 downto 0) := (others => '0');
     signal mul_temp: std_logic_vector (7 downto 0) := (others => '0');
     signal sqr_temp: std_logic_vector (7 downto 0) := (others => '0');
-    
+  
     
     signal add_cout: std_logic;
 	 signal add_1_cout: std_logic;
 	 signal change_signal_cout: std_logic;
     signal sub_cout: std_logic;
-    --signal mul_cout: std_logic;
-    --signal sqr_cout: std_logic;
     
+	 
 	 signal add_ovf: std_logic; 
 	 signal sub_ovf: std_logic;
 	 signal add_1_ovf:std_logic;
 	 signal change_signal_ovf: std_logic;
+	 
 	 
 	 signal add_sgn: std_logic;
 	 signal add_1_sgn: std_logic;
@@ -123,20 +121,18 @@ begin
 
         when "101" => -- subtraction
             alu_res (3 downto 0) <= sub_res;
-            alu_res (4) <= sub_cout;
-				alu_res(5) <= sub_ovf;
+            alu_res (4) <= '0';
+				alu_res(5) <= '0';
 				alu_res(6) <= sub_sgn;
 				alu_res(7) <= sub_zero;
 
 
         when "110" => -- multiplication
             alu_res <= mul_temp;
-            --alu_res(6) <= mul_cout;
 		
 
         when "111" => -- A * A
             alu_res <= sqr_temp;
-            --alu_res(6) <= sqr_cout;
 
         when others =>
             alu_res <= "00000000";
